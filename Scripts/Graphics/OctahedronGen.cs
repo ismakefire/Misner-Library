@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Misner.Lib.Graphics
+namespace Misner.Lib.Graphical
 {
 	public class OctahedronGen : MonoBehaviour
 	{

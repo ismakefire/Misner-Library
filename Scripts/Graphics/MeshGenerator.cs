@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Misner.Lib.Graphics
+namespace Misner.Lib.Graphical
 {
 	public class MeshGenerator
     {
