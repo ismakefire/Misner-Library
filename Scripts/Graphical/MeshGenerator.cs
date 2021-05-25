@@ -71,6 +71,32 @@ namespace Misner.Lib.Graphical
         #endregion
 
 
+        #region Complex Generation Methods
+        public void ExtrudeTriangle(Point[] triangle, Vector3 path)
+        {
+            if (triangle.Length != 3)
+            {
+                Debug.LogFormat("<color=#ff0000>{0}.ExtrudeTriangle(), parameter 'triangle' must have exactly three vertices.</color>", this.ToString());
+                return;
+            }
+
+            // Add our base triangle, backwards.
+            AddTriangleInternal(triangle[2], triangle[1], triangle[0]);
+
+            // Add our translated triangle, keeps the points for quad generation.
+            Point dst0 = AddPoint(triangle[0].Vertex + path, triangle[0].Uvt);
+            Point dst1 = AddPoint(triangle[1].Vertex + path, triangle[1].Uvt);
+            Point dst2 = AddPoint(triangle[2].Vertex + path, triangle[2].Uvt);
+            AddTriangleInternal(dst0, dst1, dst2);
+
+            // Creating a cylinder of quads around the polygon.
+            AddQuad(triangle[0], triangle[1], dst1, dst0);
+            AddQuad(triangle[1], triangle[2], dst2, dst1);
+            AddQuad(triangle[2], triangle[0], dst0, dst2);
+        }
+        #endregion
+
+
         #region Private Methods
         private Vector3[] ExtractVerts()
         {
