@@ -15,6 +15,9 @@ namespace Misner.Lib.Icon
 
         [SerializeField]
         public int[] _iconWidths = { 36, 48, 72, 96, 144, 192 };
+
+        [SerializeField]
+        public string _destinationPath = "Output";
         #endregion
     }
 }
