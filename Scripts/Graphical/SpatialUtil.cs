@@ -10,7 +10,17 @@ namespace Misner.Lib.Graphical
     /// </summary>
 	public class SpatialUtil
     {
+        #region Constants
+        public const double kEpsilon = 1E-5;
+        #endregion
+
+
         #region Public Methods
+        /// <summary>
+        /// Finds the point on an infinite plane which is closest to (0, 0, 0)
+        /// </summary>
+        /// <returns>The centroid.</returns>
+        /// <param name="plane">Plane.</param>
         public static Vector3 FindCentroid(Plane plane)
         {
             Vector3 centroid = plane.ClosestPointOnPlane(Vector3.zero);
@@ -18,6 +28,12 @@ namespace Misner.Lib.Graphical
             return centroid;
         }
 
+        /// <summary>
+        /// Finds a ray following the line of intersection between two planes.
+        /// </summary>
+        /// <returns>The planes.</returns>
+        /// <param name="planeA">Plane a.</param>
+        /// <param name="planeB">Plane b.</param>
         public static Ray IntersectPlanes(Plane planeA, Plane planeB)
         {
             Vector3 rayOrigin = FindPlanePoint(planeA, planeB);
@@ -26,6 +42,12 @@ namespace Misner.Lib.Graphical
             return new Ray(rayOrigin, rayDirection);
         }
 
+        /// <summary>
+        /// Finds the point of intersection between a ray and a plane.
+        /// </summary>
+        /// <returns>The intersect.</returns>
+        /// <param name="ray">Ray.</param>
+        /// <param name="plane">Plane.</param>
         public static Vector3 Intersect(Ray ray, Plane plane)
         {
             // Solve for rayDistance:  0f = plane.GetDistanceToPoint(ray.GetPoint(rayDistance))
@@ -47,41 +69,42 @@ namespace Misner.Lib.Graphical
         /// <param name="planeB">Plane b.</param>
         private static Vector3 FindPlanePoint(Plane planeA, Plane planeB)
         {
-            // Our centroids already have a plane coordinate of zero. So we ask,
-            // is my centroid already inside(plane coord = 0) the other plane?
-
-            Vector3 centroidB = FindCentroid(planeB); // (?, 0)
+            // Are either of our centroids already in the other plane?
+            Vector3 centroidB = FindCentroid(planeB);
             if (PlaneContainsPoint(planeA, centroidB))
             {
-                return centroidB; // (0, 0)
+                return centroidB;
             }
 
-
-            Vector3 centroidA = FindCentroid(planeA); // (0, ?)
+            Vector3 centroidA = FindCentroid(planeA);
             if (PlaneContainsPoint(planeB, centroidA))
             {
-                return centroidA; // (0, 0)
+                return centroidA;
             }
 
 
             // This is our displacement to the other plane's center.
             Vector3 centroidDelta = centroidB - centroidA;
 
-            // The direction of that centroid, inside our plane.
+            // The direction to that centroid, from within our plane.
             Vector3 inplanePath = FindInplaneDirection(centroidDelta, planeA);
 
             // Let, planeB.GetDistanceToPoint(centroidA + inplanePath * inplaneDistance) == 0
             // Solves to: inplaneDistance = -(m_Distance + Vector3.Dot(m_Normal, centroidA)) / Vector3.Dot(m_Normal, inplanePath)
             float inplaneDistance = -planeB.GetDistanceToPoint(centroidA) / Vector3.Dot(planeB.normal, inplanePath);
 
-
+            // Walking from our centroid within plane until we reach the other plane.
             Vector3 result = centroidA + inplanePath * inplaneDistance;
-
-            //Debug.LogFormat("<color=#ff00ff>{0}.FindPlanePoint(), centroidDelta = {1}, inplanePath = {2}, inplaneDistance = {3}, result = {4}</color>", "SpatialUtil", centroidDelta.ToString("N3"), inplanePath.ToString("N3"), inplaneDistance, result.ToString("N3"));
 
             return result;
         }
 
+        /// <summary>
+        /// Finds the inplane direction(normalized) towards a point in 3d space.
+        /// </summary>
+        /// <returns>The inplane direction.</returns>
+        /// <param name="displacementPath">Displacement path.</param>
+        /// <param name="plane">Plane.</param>
         private static Vector3 FindInplaneDirection(Vector3 displacementPath, Plane plane)
         {
             // Project onto the plane. Giving us a displacement towards our goal.
@@ -91,12 +114,18 @@ namespace Misner.Lib.Graphical
             return inplaneDisplacement.normalized;
         }
 
+        /// <summary>
+        /// Does the plane contain the point provided.
+        /// </summary>
+        /// <returns><c>true</c>, if contains point was planed, <c>false</c> otherwise.</returns>
+        /// <param name="plane">Plane.</param>
+        /// <param name="point">Point.</param>
         private static bool PlaneContainsPoint(Plane plane, Vector3 point)
         {
             float signedDistance = plane.GetDistanceToPoint(point);
             //return Vector3.Dot(m_Normal, point) + m_Distance;
 
-            return (Mathf.Abs(signedDistance) < 0.01f);
+            return (Mathf.Abs(signedDistance) < kEpsilon);
         }
         #endregion
     }

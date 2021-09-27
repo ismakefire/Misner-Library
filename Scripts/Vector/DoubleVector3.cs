@@ -3,6 +3,16 @@ using UnityEngine;
 
 namespace Misner.Test.Math
 {
+    /// <summary>
+    /// Double Vector 3
+    /// 
+    /// A double based Vector3 class, designed to closely mimic Unity's Vector3 class.
+    /// 
+    /// TODO, remaining methods to implement and build tests for:
+    /// static DoubleVector3 SmoothDamp(DoubleVector3 current, DoubleVector3 target, ref DoubleVector3 currentVelocity, float smoothTime, float maxSpeed)
+    /// static DoubleVector3 SmoothDamp(DoubleVector3 current, DoubleVector3 target, ref DoubleVector3 currentVelocity, float smoothTime)
+    /// static DoubleVector3 SmoothDamp(DoubleVector3 current, DoubleVector3 target, ref DoubleVector3 currentVelocity, float smoothTime, [DefaultValue("Mathf.Infinity")] float maxSpeed, [DefaultValue("Time.deltaTime")] float deltaTime)
+    /// </summary>
     [System.Serializable]
     public struct DoubleVector3 : IEquatable<DoubleVector3>
     {
@@ -84,7 +94,7 @@ namespace Misner.Test.Math
         #region Getter Properties
 #pragma warning disable IDE1006 // Naming Styles
         /// <summary>
-        ///   <para>Returns this vector with a magnitude of 1 (Read Only).</para>
+        ///   <para>Returns this vector with a magnitude of 1, if possible (Read Only).</para>
         /// </summary>
         public DoubleVector3 normalized => Normalize(this);
 
@@ -219,43 +229,6 @@ namespace Misner.Test.Math
             return target;
         }
 
-        //[ExcludeFromDocs]
-        //public static DoubleVector3 SmoothDamp(DoubleVector3 current, DoubleVector3 target, ref DoubleVector3 currentVelocity, float smoothTime, float maxSpeed)
-        //{
-        //    float deltaTime = Time.deltaTime;
-        //    return SmoothDamp(current, target, ref currentVelocity, smoothTime, maxSpeed, deltaTime);
-        //}
-
-        //[ExcludeFromDocs]
-        //public static DoubleVector3 SmoothDamp(DoubleVector3 current, DoubleVector3 target, ref DoubleVector3 currentVelocity, float smoothTime)
-        //{
-        //    float deltaTime = Time.deltaTime;
-        //    float maxSpeed = float.PositiveInfinity;
-        //    return SmoothDamp(current, target, ref currentVelocity, smoothTime, maxSpeed, deltaTime);
-        //}
-
-        //public static DoubleVector3 SmoothDamp(DoubleVector3 current, DoubleVector3 target, ref DoubleVector3 currentVelocity, float smoothTime, [DefaultValue("Mathf.Infinity")] float maxSpeed, [DefaultValue("Time.deltaTime")] float deltaTime)
-        //{
-        //    smoothTime = Mathf.Max(0.0001f, smoothTime);
-        //    float num = 2f / smoothTime;
-        //    float num2 = num * deltaTime;
-        //    float d = 1f / (1f + num2 + 0.48f * num2 * num2 + 0.235f * num2 * num2 * num2);
-        //    DoubleVector3 vector = current - target;
-        //    DoubleVector3 vector2 = target;
-        //    float maxLength = maxSpeed * smoothTime;
-        //    vector = ClampMagnitude(vector, maxLength);
-        //    target = current - vector;
-        //    DoubleVector3 vector3 = (currentVelocity + num * vector) * deltaTime;
-        //    currentVelocity = (currentVelocity - num * vector3) * d;
-        //    DoubleVector3 vector4 = target + (vector + vector3) * d;
-        //    if (Dot(vector2 - current, vector4 - vector2) > 0f)
-        //    {
-        //        vector4 = vector2;
-        //        currentVelocity = (vector4 - vector2) / deltaTime;
-        //    }
-        //    return vector4;
-        //}
-
         /// <summary>
         ///   <para>Set x, y and z components of an existing DoubleVector3.</para>
         /// </summary>
@@ -308,7 +281,7 @@ namespace Misner.Test.Math
         }
 
         /// <summary>
-        ///   <para>Returns true if the given vector is exactly equal to this vector.</para>
+        ///   <para>Component-wise equality of two vectors.</para>
         /// </summary>
         /// <param name="obj"></param>
         public override bool Equals(object obj)
@@ -320,6 +293,12 @@ namespace Misner.Test.Math
             return Equals((DoubleVector3)obj);
         }
 
+        /// <summary>
+        ///   <para>Component-wise equality of two vectors.</para>
+        /// </summary>
+        /// <param name="other">The <see cref="Misner.Test.Math.DoubleVector3"/> to compare with the current <see cref="T:Misner.Test.Math.DoubleVector3"/>.</param>
+        /// <returns><c>true</c> if the specified <see cref="Misner.Test.Math.DoubleVector3"/> is equal to the current
+        /// <see cref="T:Misner.Test.Math.DoubleVector3"/>; otherwise, <c>false</c>.</returns>
         public bool Equals(DoubleVector3 other)
         {
             return x.Equals(other.x) && y.Equals(other.y) && z.Equals(other.z);
@@ -336,7 +315,7 @@ namespace Misner.Test.Math
         }
 
         /// <summary>
-        ///   <para>Makes this vector have a magnitude of 1.</para>
+        ///   <para>Returns this vector with a magnitude of 1, if possible.</para>
         /// </summary>
         /// <param name="value"></param>
         public static DoubleVector3 Normalize(DoubleVector3 value)
@@ -349,6 +328,9 @@ namespace Misner.Test.Math
             return zero;
         }
 
+        /// <summary>
+        ///   <para>Makes this vector have a magnitude of 1, if possible.</para>
+        /// </summary>
         public void Normalize()
         {
             double num = Magnitude(this);
@@ -457,11 +439,17 @@ namespace Misner.Test.Math
             return vector;
         }
 
+        /// <summary>
+        ///   <para>Returns the length of the vector provided (Read Only).</para>
+        /// </summary>
         public static double Magnitude(DoubleVector3 vector)
         {
             return System.Math.Sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
         }
 
+        /// <summary>
+        ///   <para>Returns the squared length of the vector provided (Read Only).</para>
+        /// </summary>
         public static double SqrMagnitude(DoubleVector3 vector)
         {
             return vector.x * vector.x + vector.y * vector.y + vector.z * vector.z;
@@ -487,41 +475,87 @@ namespace Misner.Test.Math
             return new DoubleVector3(System.Math.Max(lhs.x, rhs.x), System.Math.Max(lhs.y, rhs.y), System.Math.Max(lhs.z, rhs.z));
         }
 
+        /// <summary>
+        ///   <para>Component-wise addition of two vectors.</para>
+        /// </summary>
+        /// <param name="a">The first <see cref="Misner.Test.Math.DoubleVector3"/> to add.</param>
+        /// <param name="b">The second <see cref="Misner.Test.Math.DoubleVector3"/> to add.</param>
+        /// <returns>The <see cref="T:Misner.Test.Math.DoubleVector3"/> that is the sum of the values of <c>a</c> and <c>b</c>.</returns>
         public static DoubleVector3 operator +(DoubleVector3 a, DoubleVector3 b)
         {
             return new DoubleVector3(a.x + b.x, a.y + b.y, a.z + b.z);
         }
 
+        /// <summary>
+        ///   <para>Component-wise subtraction of two vectors.</para>
+        /// </summary>
+        /// <param name="a">The <see cref="Misner.Test.Math.DoubleVector3"/> to subtract from (the minuend).</param>
+        /// <param name="b">The <see cref="Misner.Test.Math.DoubleVector3"/> to subtract (the subtrahend).</param>
+        /// <returns>The <see cref="T:Misner.Test.Math.DoubleVector3"/> that is the <c>a</c> minus <c>b</c>.</returns>
         public static DoubleVector3 operator -(DoubleVector3 a, DoubleVector3 b)
         {
             return new DoubleVector3(a.x - b.x, a.y - b.y, a.z - b.z);
         }
 
+        /// <summary>
+        ///   <para>Component-wise negation of a vector.</para>
+        /// </summary>
+        /// <returns>The <see cref="T:Misner.Test.Math.DoubleVector3"/> provided, negated.</returns>
         public static DoubleVector3 operator -(DoubleVector3 a)
         {
             return new DoubleVector3(0 - a.x, 0 - a.y, 0 - a.z);
         }
 
+        /// <summary>
+        ///   <para>Scalar multiplication of a vector by a individual value.</para>
+        /// </summary>
+        /// <param name="a">The <see cref="Misner.Test.Math.DoubleVector3"/> to multiply.</param>
+        /// <param name="d">The <see cref="double"/> to multiply.</param>
+        /// <returns>The <see cref="T:Misner.Test.Math.DoubleVector3"/> that is the <c>a</c> * <c>d</c>.</returns>
         public static DoubleVector3 operator *(DoubleVector3 a, double d)
         {
             return new DoubleVector3(a.x * d, a.y * d, a.z * d);
         }
 
+        /// <summary>
+        ///   <para>Scalar multiplication of a vector by a individual value.</para>
+        /// </summary>
+        /// <param name="d">The <see cref="double"/> to multiply.</param>
+        /// <param name="a">The <see cref="Misner.Test.Math.DoubleVector3"/> to multiply.</param>
+        /// <returns>The <see cref="T:Misner.Test.Math.DoubleVector3"/> that is the <c>d</c> * <c>a</c>.</returns>
         public static DoubleVector3 operator *(double d, DoubleVector3 a)
         {
             return new DoubleVector3(a.x * d, a.y * d, a.z * d);
         }
 
+        /// <summary>
+        ///   <para>Scalar division of a vector by a individual value.</para>
+        /// </summary>
+        /// <param name="a">The <see cref="Misner.Test.Math.DoubleVector3"/> to divide (the divident).</param>
+        /// <param name="d">The <see cref="double"/> to divide (the divisor).</param>
+        /// <returns>The <see cref="T:Misner.Test.Math.DoubleVector3"/> that is the <c>a</c> / <c>d</c>.</returns>
         public static DoubleVector3 operator /(DoubleVector3 a, double d)
         {
             return new DoubleVector3(a.x / d, a.y / d, a.z / d);
         }
 
+        /// <summary>
+        ///   <para>Spatial equality of two vectors within an epsilon tolerance.</para>
+        /// </summary>
+        /// <param name="lhs">The first <see cref="Misner.Test.Math.DoubleVector3"/> to compare.</param>
+        /// <param name="rhs">The second <see cref="Misner.Test.Math.DoubleVector3"/> to compare.</param>
+        /// <returns><c>true</c> if <c>lhs</c> and <c>rhs</c> are equal; otherwise, <c>false</c>.</returns>
         public static bool operator ==(DoubleVector3 lhs, DoubleVector3 rhs)
         {
             return SqrMagnitude(lhs - rhs) < kEpsilonNormalSqrt;
         }
 
+        /// <summary>
+        ///   <para>Non-equality of two vectors within a spatial epsilon tolerance.</para>
+        /// </summary>
+        /// <param name="lhs">The first <see cref="Misner.Test.Math.DoubleVector3"/> to compare.</param>
+        /// <param name="rhs">The second <see cref="Misner.Test.Math.DoubleVector3"/> to compare.</param>
+        /// <returns><c>true</c> if <c>lhs</c> and <c>rhs</c> are not equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(DoubleVector3 lhs, DoubleVector3 rhs)
         {
             return !(lhs == rhs);
@@ -544,6 +578,13 @@ namespace Misner.Test.Math
             return string.Format("({0}, {1}, {2})", x.ToString(format), y.ToString(format), z.ToString(format));
         }
 
+        /// <summary>
+        ///   <para>Value clamp implementation based on UnityEngine.Mathf.Clamp().</para>
+        /// </summary>
+        /// <returns>The internal.</returns>
+        /// <param name="value">Value.</param>
+        /// <param name="min">Minimum.</param>
+        /// <param name="max">Max.</param>
         private static double Clamp_Internal(double value, double min, double max)
         {
             if (value < min)

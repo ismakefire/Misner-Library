@@ -2,6 +2,11 @@
 
 namespace Misner.Lib.Control
 {
+    /// <summary>
+    /// Key input listener.
+    /// 
+    /// Behavior for providing key into to any class which implements the IInputTarget interface.
+    /// </summary>
     public class KeyInputListener : MonoBehaviour
     {
         #region Types

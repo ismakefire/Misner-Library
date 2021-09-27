@@ -2,6 +2,11 @@
 
 namespace Misner.Lib.Mobile
 {
+    /// <summary>
+    /// Never sleep.
+    /// 
+    /// Stand alone behavior for disabling a mobile build from falling asleep.
+    /// </summary>
     public class NeverSleep : MonoBehaviour
     {
         #region MonoBehaviour

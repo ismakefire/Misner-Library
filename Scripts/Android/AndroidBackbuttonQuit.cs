@@ -2,6 +2,11 @@
 
 namespace Misner.Lib.Android
 {
+    /// <summary>
+    /// Android backbutton quit.
+    /// 
+    /// Stand alone behavior for detecting the Android back button and dispatching a quit message.
+    /// </summary>
     public class AndroidBackbuttonQuit : MonoBehaviour
     {
         #region MonoBehaviour

@@ -3,9 +3,19 @@ using UnityEngine;
 
 namespace Misner.Lib.Graphical
 {
+    /// <summary>
+    /// Mesh generator.
+    /// 
+    /// 3d mesh building class to assist in the construction of primitives.
+    /// </summary>
 	public class MeshGenerator
     {
         #region Types
+        /// <summary>
+        /// Point.
+        /// 
+        /// Data related to a specific vertex during mesh generation.
+        /// </summary>
         public class Point
         {
             #region Readonly Variables
@@ -34,6 +44,12 @@ namespace Misner.Lib.Graphical
 
 
         #region Public Methods
+        /// <summary>
+        /// Adds a new point.
+        /// </summary>
+        /// <returns>The point.</returns>
+        /// <param name="vertex">Vertex.</param>
+        /// <param name="uvt">Uvt.</param>
         public Point AddPoint(Vector3 vertex, Vector2 uvt)
         {
             int index = _points.Count;
@@ -44,17 +60,55 @@ namespace Misner.Lib.Graphical
             return newPoint;
         }
 
+        /// <summary>
+        /// Builds a triangle from the given points.
+        /// </summary>
+        /// <param name="p0">P0.</param>
+        /// <param name="p1">P1.</param>
+        /// <param name="p2">P2.</param>
         public void AddTriangle(Point p0, Point p1, Point p2)
         {
             AddTriangleInternal(p0, p1, p2);
         }
 
+        /// <summary>
+        /// Builds a quadrilateral(quad) from the given points.
+        /// </summary>
+        /// <param name="p0">P0.</param>
+        /// <param name="p1">P1.</param>
+        /// <param name="p2">P2.</param>
+        /// <param name="p3">P3.</param>
         public void AddQuad(Point p0, Point p1, Point p2, Point p3)
         {
             AddTriangleInternal(p0, p1, p2);
             AddTriangleInternal(p0, p2, p3);
         }
 
+        /// <summary>
+        /// Builds a polygon from the given points.
+        /// </summary>
+        /// <param name="points">Points.</param>
+        public void AddPolygon(Point[] points)
+        {
+            if (points?.Length < 3)
+            {
+                Debug.LogFormat("<color=#ff0000>{0}.AddPolygon(), a polygon must have at least 3 points.</color>", this.ToString());
+            }
+
+            Point p0 = points[0];
+            for (int i = 2; i < points.Length; i++)
+            {
+                Point p1 = points[i - 1];
+                Point p2 = points[i];
+
+                AddTriangleInternal(p0, p1, p2);
+            }
+        }
+
+        /// <summary>
+        /// Generates a mesh, usable by Unity, from the information accumulated by the "Add" methods.
+        /// </summary>
+        /// <returns>The mesh.</returns>
         public Mesh BuildMesh()
         {
             Mesh mesh = new Mesh
@@ -72,6 +126,11 @@ namespace Misner.Lib.Graphical
 
 
         #region Complex Generation Methods
+        /// <summary>
+        /// Adds the convex hull of an extruded triangle to the mesh.
+        /// </summary>
+        /// <param name="triangle">Triangle.</param>
+        /// <param name="path">Path.</param>
         public void ExtrudeTriangle(Point[] triangle, Vector3 path)
         {
             if (triangle.Length != 3)
@@ -98,6 +157,10 @@ namespace Misner.Lib.Graphical
 
 
         #region Private Methods
+        /// <summary>
+        /// Builds a vertex position array from our accumulated points.
+        /// </summary>
+        /// <returns>The verts.</returns>
         private Vector3[] ExtractVerts()
         {
             List<Vector3> verts = new List<Vector3>();
@@ -110,6 +173,10 @@ namespace Misner.Lib.Graphical
             return verts.ToArray();
         }
 
+        /// <summary>
+        /// Builds a vertex UV coordinate array from our accumulated points.
+        /// </summary>
+        /// <returns>The uvts.</returns>
         private Vector2[] ExtractUvts()
         {
             List<Vector2> uvts = new List<Vector2>();
@@ -122,6 +189,14 @@ namespace Misner.Lib.Graphical
             return uvts.ToArray();
         }
 
+        /// <summary>
+        /// Builds a triangle from the given points.
+        /// 
+        /// Shared internal use only, to centralize this implementation.
+        /// </summary>
+        /// <param name="p0">P0.</param>
+        /// <param name="p1">P1.</param>
+        /// <param name="p2">P2.</param>
         private void AddTriangleInternal(Point p0, Point p1, Point p2)
         {
             _indices.Add(p0.Index);

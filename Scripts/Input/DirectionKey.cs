@@ -3,6 +3,11 @@ using UnityEngine;
 
 namespace Misner.Lib.Control
 {
+    /// <summary>
+    /// Direction key.
+    /// 
+    /// A trivial mapping from KeyCodes to spatial directions for building control mechanisms in Unity.
+    /// </summary>
     [Serializable]
     public struct DirectionKey
     {

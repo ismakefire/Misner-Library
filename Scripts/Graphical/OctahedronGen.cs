@@ -2,6 +2,12 @@
 
 namespace Misner.Lib.Graphical
 {
+    /// <summary>
+    /// Octahedron gen.
+    /// 
+    /// Trivial class for replacing our mesh with an octohedron.
+    /// </summary>
+    [RequireComponent(typeof(MeshFilter))]
 	public class OctahedronGen : MonoBehaviour
 	{
 		#region MonoBehaviour
